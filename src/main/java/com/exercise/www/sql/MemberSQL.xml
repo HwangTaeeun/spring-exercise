@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mSQL">
+	<select id="Login" resultType="int" parameterType="mVO">
+<!-- 
+	원래는 아래 와 같은 형태이지만 매번 경로가 길어지기떄문에 mybatis-config에서 mVO로 별칭을 줌
+<select id="Login" resultType="int" parameterType="com.exercise.www.vo.MemberVO"> -->
+		SELECT
+			count(*) cnt
+		FROM
+			member
+		WHERE
+			m_id=#{id}
+			AND
+			m_pw=#{pw}
+	</select>
+</mapper>

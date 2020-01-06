@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bSQL">
+	<!-- 게시물 전체 갯수를 구하는 질의명령 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT
+			count(*)
+		FROM
+			bBoard
+		WHERE
+			z_isshow = 'Y'
+	</select>
+	
+	<!-- 리스트보기 -->
+	<select id="showList" resultType="bVO" parameterType="page">
+		SELECT
+			z_no bno, to_char(z_date, 'yyyy-MM-dd') sDate, z_id bid, z_title title, z_great great, z_bad bad
+		FROM
+			bBoard
+		WHERE
+			z_isshow = 'Y'
+		ORDER BY 
+			z_no
+	</select>
+	
+	<!-- 글내용 보기 -->
+	<select id="showPost" resultType="bVO" parameterType="bVO">
+		SELECT
+  			 bno, title, sDate, body, savename, great, bad
+		FROM
+       		(
+       			SELECT
+					z.z_no bno, z.z_title title, to_char(z.z_date,'yyyy-MM-dd') sDate, z.z_body body, p.p_savename savename, z.z_great great, z.z_bad bad
+				FROM
+					bBoard z, mypick p
+				WHERE
+            		z.z_no = p.p_no(+)
+        	)
+		WHERE
+    		bno = #{bno}
+	</select>
+	
+	
+	<!-- 글쓰기 -->
+	<insert id="write" parameterType="bVO">
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			SELECT
+				NVL(MAX(z_no) + 1, 1)
+			FROM
+				bBoard
+		</selectKey>
+		INSERT INTO 
+			bBoard 
+		VALUES(
+			#{bno}, #{bid}, #{title}, #{body}, sysdate, 'Y' , 0, 0
+		)
+	</insert>
+	
+	<insert id="addPic" parameterType="fVO">
+		<selectKey keyProperty="pno" resultType="int" order="BEFORE">
+			SELECT
+				NVL(MAX(p_no) + 1, 1)
+			FROM
+				mypick
+		</selectKey>
+		INSERT INTO
+			mypick(
+				p_no, p_id, p_oriname, p_savename, 
+				p_len, p_dir
+			)
+		VALUES(
+			#{pno}, #{fid}, #{oriName}, #{saveName}, #{len}, #{dir}
+		)
+	</insert>
+	
+	<update id="choo" parameterType="bVO">
+		UPDATE
+				bBoard
+        SET
+                z_great = z_great + 1
+        WHERE
+            z_no =#{bbno}
+	</update>
+</mapper>

@@ -1,0 +1,6 @@
+1.추천 처리
+	요청내용 : /www/board/choo.van 
+	파라미터 : BoardVO bno
+	컨트롤러 :	com.exercise.www.Controller.Board
+	처리함수 :	chooProc()
+	응답문서 : com/exercise/www/board/post.jsp
